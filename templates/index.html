@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NexoraMsg - Bulk Messaging</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        .platform-selector {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .platform-selector label {
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .platform-selector input[type="radio"] {
+            margin-right: 5px;
+        }
+        .error {
+            color: red;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            color: green;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .button-group {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .download-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .download-link:hover {
+            background-color: #0b7dda;
+        }
+        .qr-section {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: none;
+        }
+        .qr-section.active {
+            display: block;
+        }
+        .qr-section img {
+            max-width: 300px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📱 NexoraMsg - Bulk Messaging Platform</h2>
+        
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if uploaded %}
+            <div class="success">
+                ✅ Messages queued to {{ count }} recipients on {{ platform.upper() }}!
+                <br>
+                <a href="{{ url_for('static', filename='logs/' + log_file) }}" download class="download-link">📥 Download Message Log (Excel)</a>
+            </div>
+            {% if status %}
+                <p style="text-align: center; font-weight: bold;">{{ status }}</p>
+            {% endif %}
+        {% endif %}
+
+        <form method="post">
+            <div class="platform-selector">
+                <label>
+                    <input type="radio" name="platform" value="whatsapp" checked> 💬 WhatsApp
+                </label>
+                {% if telegram_token %}
+                    <label>
+                        <input type="radio" name="platform" value="telegram"> 📨 Telegram
+                    </label>
+                {% endif %}
+            </div>
+
+            <div class="qr-section active">
+                <h3>🔐 WhatsApp Login Required</h3>
+                <p>A QR code will be generated and displayed when you start sending messages.</p>
+                <p>Please scan the QR code with your phone to authorize WhatsApp Web access.</p>
+            </div>
+
+            <div>
+                <label><strong>Recipients (one per line):</strong></label>
+                <textarea name="recipients" rows="10" placeholder="For WhatsApp: 919876543210 (with country code)&#10;For Telegram: @username or numeric ID"></textarea>
+            </div>
+
+            <div>
+                <label><strong>Message:</strong></label>
+                <textarea name="message" rows="5" placeholder="Type your message here..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button name="action" value="Start" type="submit">▶️ Start Sending</button>
+                <button name="action" value="Stop" type="submit">⏹️ Stop Sending</button>
+            </div>
+
+            <div style="background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                <h4>⏱️ Random Delay Feature</h4>
+                <p>✅ <strong>Active:</strong> Messages are sent with random delays between <strong>20 seconds</strong> to <strong>3 minutes</strong> to avoid platform restrictions.</p>
+                <p style="font-size: 12px; color: #666;">This helps prevent account bans by mimicking human-like sending patterns.</p>
+            </div>
+
+            <div style="background-color: #f3e5f5; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                <h4>📋 Logging & Tracking</h4>
+                <p>Each campaign generates an Excel log with:</p>
+                <ul style="font-size: 14px;">
+                    <li>Recipient ID/Phone Number</li>
+                    <li>Send Status (Sent/Failed/Invalid)</li>
+                    <li>Timestamp of sending</li>
+                    <li>Delay used for each message</li>
+                </ul>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.querySelectorAll('input[name="platform"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const qrSection = document.querySelector('.qr-section');
+                if (this.value === 'whatsapp') {
+                    qrSection.classList.add('active');
+                } else {
+                    qrSection.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
