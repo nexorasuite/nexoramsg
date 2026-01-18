@@ -313,8 +313,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📱 NexoraMsg Dashboard</h1>
-            <p>Bulk Messaging with Real-Time Progress</p>
+            <h1>📊 NexoraMsg Dashboard</h1>
+            <p>Real-Time Bulk Messaging Progress</p>
         </div>
 
         <div class="dashboard">
@@ -396,7 +396,7 @@
                 </div>
 
                 <div style="text-align: center; margin-top: 20px;">
-                    <a href="#" id="downloadLink" class="download-link" style="display:none;">📥 Download Log</a>
+                    <a href="#" id="downloadLink" class="download-link" style="display:none;">📥 Download Log (Excel)</a>
                 </div>
             </div>
         </div>
@@ -431,7 +431,7 @@
             progressSection.style.display = 'block';
             pauseBtn.style.display = 'inline-block';
             stopBtn.style.display = 'inline-block';
-            messageLog.innerHTML = '<div style="text-align: center;">Starting...</div>';
+            messageLog.innerHTML = '<div style="text-align: center; color: #999;">Starting...</div>';
 
             // Submit form
             sendForm.submit();
